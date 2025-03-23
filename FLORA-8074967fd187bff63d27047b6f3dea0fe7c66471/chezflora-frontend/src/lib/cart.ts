@@ -58,9 +58,11 @@ export function updateCartItemQuantity(productId: string, quantity: number): voi
   saveCart(updatedCart);
 }
 
-export function clearCart(): void {
-  localStorage.removeItem(CART_STORAGE_KEY);
-}
+export const clearCart = () => {
+  localStorage.setItem('cart', '[]');
+  // Déclencher l'événement pour informer les autres composants
+  window.dispatchEvent(new Event('cartUpdated'));
+};
 
 export function getCartTotal(): number {
   const cart = getCart();

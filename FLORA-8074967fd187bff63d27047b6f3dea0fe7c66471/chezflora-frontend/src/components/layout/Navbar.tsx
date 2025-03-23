@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingBag, Menu, X, Heart, User, LogOut, Settings } from 'lucide-react';
-import { getCartItemCount } from '@/lib/cart';
+import { getCartItemCount, clearCart } from '@/lib/cart'; // Importez clearCart
 import LanguageSelector from '@/components/shared/LanguageSelector';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,59 @@ export const Navbar = () => {
   
   // Utilisation du contexte d'authentification
   const { currentUser, isAuthenticated, logout, isAdmin } = useAuth();
+
+  // Stocker l'ID de l'utilisateur actuel pour détecter les changements
+  const [previousUserId, setPreviousUserId] = useState(currentUser?.id || null);
+
+  // Effet pour détecter les changements d'utilisateur et réinitialiser le panier si nécessaire
+  useEffect(() => {
+    // Si un utilisateur différent se connecte
+    if (currentUser?.id && previousUserId !== currentUser.id) {
+      // Sauvegarder le panier actuel dans le localStorage spécifique à l'ancien utilisateur
+      if (previousUserId) {
+        const currentCart = JSON.parse(localStorage.getItem('cart') || '[]');
+        if (currentCart.length > 0) {
+          localStorage.setItem(`cart_${previousUserId}`, JSON.stringify(currentCart));
+        }
+      }
+      
+      // Vérifier si l'utilisateur actuel a un panier sauvegardé
+      const savedUserCart = localStorage.getItem(`cart_${currentUser.id}`);
+      
+      if (savedUserCart) {
+        // Restaurer le panier sauvegardé de l'utilisateur
+        localStorage.setItem('cart', savedUserCart);
+      } else {
+        // Sinon, effacer le panier actuel
+        clearCart();
+      }
+      
+      // Mettre à jour le compteur
+      setCartCount(getCartItemCount());
+      
+      // Déclencher un événement pour informer les autres composants
+      window.dispatchEvent(new Event('cartUpdated'));
+      
+      // Mettre à jour l'ID de l'utilisateur précédent
+      setPreviousUserId(currentUser.id);
+    } else if (!currentUser?.id && previousUserId) {
+      // Si l'utilisateur se déconnecte, sauvegarder son panier
+      const currentCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      if (currentCart.length > 0) {
+        localStorage.setItem(`cart_${previousUserId}`, JSON.stringify(currentCart));
+      }
+      
+      // Effacer le panier actif
+      clearCart();
+      setCartCount(0);
+      
+      // Mettre à jour l'ID précédent
+      setPreviousUserId(null);
+      
+      // Informer les autres composants
+      window.dispatchEvent(new Event('cartUpdated'));
+    }
+  }, [currentUser, previousUserId]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,6 +103,18 @@ export const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
+    // Sauvegarder le panier avant la déconnexion
+    if (currentUser?.id) {
+      const currentCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      if (currentCart.length > 0) {
+        localStorage.setItem(`cart_${currentUser.id}`, JSON.stringify(currentCart));
+      }
+    }
+    
+    // Effacer le panier actif
+    clearCart();
+    
+    // Se déconnecter
     logout();
     navigate('/');
   };

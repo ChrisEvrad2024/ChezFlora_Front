@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
@@ -20,13 +19,29 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+// Fonction utilitaire pour normaliser les données du produit
+const normalizeProductData = (item: any) => {
+  return {
+    id: item.id,
+    name: item.name || "Produit sans nom",
+    price: parseFloat(item.price) || 0,
+    image: item.image || (item.images && item.images.length > 0 ? item.images[0] : '/placeholder.svg'),
+    images: item.images || (item.image ? [item.image] : ['/placeholder.svg']),
+    description: item.description || "Description non disponible",
+    category: item.category || "Non catégorisé",
+    popular: item.popular !== undefined ? item.popular : false
+  };
+};
+
 const Wishlist = () => {
   const [wishlistItems, setWishlistItems] = useState<any[]>([]);
   
   useEffect(() => {
     const loadWishlist = () => {
       const items = getWishlist();
-      setWishlistItems(items);
+      // Normaliser tous les éléments au chargement pour garantir la cohérence
+      const normalizedItems = items.map(normalizeProductData);
+      setWishlistItems(normalizedItems);
     };
     
     loadWishlist();
@@ -43,7 +58,7 @@ const Wishlist = () => {
   
   const handleRemoveItem = (id: string) => {
     removeFromWishlist(id);
-    setWishlistItems(getWishlist());
+    setWishlistItems(getWishlist().map(normalizeProductData));
     toast.info("Produit retiré", {
       description: "Le produit a été retiré de votre wishlist",
       duration: 3000,
@@ -51,15 +66,10 @@ const Wishlist = () => {
   };
   
   const handleAddToCart = (item: any) => {
-    addToCart({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      images: [item.image],
-      description: "Ajouté depuis la wishlist", // Added required field
-      category: "unknown", // Added required field
-      popular: false // Added required field
-    }, 1);
+    // Normaliser l'objet produit pour l'ajouter au panier
+    const normalizedProduct = normalizeProductData(item);
+    
+    addToCart(normalizedProduct, 1);
     
     // Dispatch custom event to update cart count in navbar
     window.dispatchEvent(new Event('cartUpdated'));
@@ -175,9 +185,12 @@ const Wishlist = () => {
                     
                     <Link to={`/product/${item.id}`} className="block aspect-square bg-muted">
                       <img 
-                        src={item.image} 
+                        src={item.image}
                         alt={item.name}
                         className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/placeholder.svg';
+                        }}
                       />
                     </Link>
                     
@@ -186,7 +199,7 @@ const Wishlist = () => {
                         <h3 className="font-medium mb-1 group-hover:text-primary transition-colors">{item.name}</h3>
                       </Link>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="font-medium">{item.price.toFixed(2)} €</span>
+                        <span className="font-medium">{parseFloat(item.price).toFixed(2)} €</span>
                         <button 
                           onClick={() => handleAddToCart(item)}
                           className="p-2 bg-primary/10 text-primary rounded-full hover:bg-primary hover:text-white transition-colors"
