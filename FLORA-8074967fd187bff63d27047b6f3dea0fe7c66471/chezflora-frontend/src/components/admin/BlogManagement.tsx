@@ -769,14 +769,24 @@ const BlogManagement = () => {
 
       {/* Dialogue de création/édition d'article */}
       <Dialog open={isFormDialogOpen} onOpenChange={setIsFormDialogOpen}>
-        <DialogContent className="sm:max-w-[725px] max-h-[85vh] overflow-y-auto">
-          <BlogPostForm 
-            initialData={editingPost} 
-            onSave={handleSavePost} 
-            onCancel={() => setIsFormDialogOpen(false)} 
-          />
-        </DialogContent>
-      </Dialog>
+  <DialogContent className="sm:max-w-[725px] max-h-[85vh] overflow-y-auto">
+    <DialogHeader>
+      <DialogTitle>
+        {editingPost ? 'Modifier un article' : 'Ajouter un article'}
+      </DialogTitle>
+      <DialogDescription>
+        {editingPost 
+          ? "Modifiez les informations de l'article ci-dessous" 
+          : "Remplissez le formulaire pour créer un nouvel article"}
+      </DialogDescription>
+    </DialogHeader>
+    <BlogPostForm 
+      initialData={editingPost} 
+      onSave={handleSavePost} 
+      onCancel={() => setIsFormDialogOpen(false)} 
+    />
+  </DialogContent>
+</Dialog>
 
       {/* Dialogue de confirmation de suppression */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>

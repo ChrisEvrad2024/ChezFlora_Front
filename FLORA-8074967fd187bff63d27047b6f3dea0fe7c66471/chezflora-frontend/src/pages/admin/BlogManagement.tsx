@@ -145,34 +145,74 @@ const BlogManagement = () => {
   };
 
   // Handle save post
-  const handleSavePost = (formPost: FormPostData) => {
-    // Convert from BlogPostForm format to our BlogPost format
-    const newPost: BlogPost = {
-      id: editingPost ? Number(editingPost.id) : Date.now(),
-      title: formPost.title,
-      excerpt: formPost.excerpt,
-      content: formPost.content,
-      author: formPost.authorName,
-      date: format(formPost.publishDate, 'yyyy-MM-dd'),
-      category: formPost.category,
-      imageUrl: formPost.imageUrl,
-      tags: formPost.tags,
-    };
-
-    if (editingPost) {
-      // Update existing post
-      setPosts(posts.map(p => p.id === newPost.id ? newPost : p));
-      toast.success("Article mis à jour", {
-        description: "L'article a été mis à jour avec succès."
-      });
-    } else {
-      // Add new post
-      setPosts([...posts, newPost]);
-      toast.success("Article ajouté", {
-        description: "L'article a été ajouté avec succès."
+  const handleSavePost = (formData) => {
+    try {
+      let newPost;
+      
+      if (editingPost) {
+        // Mise à jour d'un article existant
+        newPost = BlogService.updatePost(editingPost.id, {
+          title: formData.title,
+          excerpt: formData.excerpt,
+          content: formData.content,
+          category: formData.category,
+          tags: formData.tags,
+          status: formData.status,
+          imageUrl: formData.imageUrl,
+          featured: formData.featured,
+          author: formData.authorName,
+          
+          // Assurez-vous que la date est un objet Date valide avant de l'utiliser
+          // ou utilisez directement une chaîne de date ISO
+          publishDate: formData.publishDate instanceof Date 
+            ? formData.publishDate.toISOString() 
+            : new Date().toISOString()
+        });
+        
+        if (newPost) {
+          // Mettre à jour la liste locale
+          setPosts(posts.map(p => p.id === newPost.id ? newPost : p));
+          
+          toast.success("Article mis à jour", {
+            description: "Les modifications ont été enregistrées avec succès"
+          });
+        } else {
+          toast.error("Échec de la mise à jour", {
+            description: "L'article n'a pas pu être mis à jour"
+          });
+        }
+      } else {
+        // Création d'un nouvel article
+        newPost = BlogService.createPost({
+          title: formData.title,
+          excerpt: formData.excerpt,
+          content: formData.content,
+          category: formData.category,
+          tags: formData.tags,
+          status: formData.status,
+          imageUrl: formData.imageUrl,
+          featured: formData.featured,
+          authorName: formData.authorName,
+          // Utilisez la date actuelle pour un nouvel article
+          publishDate: new Date().toISOString()
+        });
+        
+        // Ajouter à la liste locale
+        setPosts([...posts, newPost]);
+        
+        toast.success("Article créé", {
+          description: "Le nouvel article a été créé avec succès"
+        });
+      }
+      
+      // Fermer le dialogue
+      setIsFormDialogOpen(false);
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement:", error);
+      toast.error("Erreur", {
+        description: "Une erreur est survenue lors de l'enregistrement de l'article"
       });
     }
-    setIsFormDialogOpen(false);
   };
   
   // Get status badge color

@@ -443,6 +443,69 @@ export class BlogService {
     const scheduledPosts = StorageService.getLocalItem(SCHEDULED_POSTS_KEY) || [];
     const now = new Date();
     let publishedCount = 0;
+
+
+    const handleSavePost = (formData) => {
+        try {
+          let newPost;
+          
+          if (editingPost) {
+            // Mise à jour d'un article existant
+            newPost = {
+              id: parseInt(editingPost.id),
+              title: formData.title,
+              excerpt: formData.excerpt,
+              content: formData.content,
+              category: formData.category,
+              tags: formData.tags,
+              status: formData.status,
+              imageUrl: formData.imageUrl,
+              featured: formData.featured,
+              author: formData.authorName,
+              date: formData.publishDate instanceof Date 
+                ? formData.publishDate.toISOString() 
+                : new Date().toISOString()
+            };
+            
+            // Mettre à jour la liste locale
+            setPosts(posts.map(p => p.id === newPost.id ? newPost : p));
+            
+            toast.success("Article mis à jour", {
+              description: "Les modifications ont été enregistrées avec succès"
+            });
+          } else {
+            // Création d'un nouvel article
+            newPost = {
+              id: Date.now(), // Utiliser timestamp comme ID temporaire
+              title: formData.title,
+              excerpt: formData.excerpt,
+              content: formData.content,
+              category: formData.category,
+              tags: formData.tags,
+              status: formData.status,
+              imageUrl: formData.imageUrl,
+              featured: formData.featured || false,
+              author: formData.authorName,
+              date: new Date().toISOString()
+            };
+            
+            // Ajouter à la liste locale
+            setPosts([...posts, newPost]);
+            
+            toast.success("Article créé", {
+              description: "Le nouvel article a été créé avec succès"
+            });
+          }
+          
+          // Fermer le dialogue
+          setIsFormDialogOpen(false);
+        } catch (error) {
+          console.error("Erreur lors de l'enregistrement:", error);
+          toast.error("Erreur", {
+            description: "Une erreur est survenue lors de l'enregistrement de l'article"
+          });
+        }
+      };
     
     // Filtrer les articles dont la date de publication est passée
     const toPublish = scheduledPosts.filter(item => new Date(item.scheduledDate) <= now);

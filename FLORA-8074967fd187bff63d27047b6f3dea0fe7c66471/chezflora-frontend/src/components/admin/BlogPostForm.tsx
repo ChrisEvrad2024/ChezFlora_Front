@@ -50,6 +50,40 @@ const blogPostFormSchema = z.object({
   featured: z.boolean().default(false),
 });
 
+const handleImageUpload = (event) => {
+  const file = event.target.files[0];
+  
+  if (!file) return;
+  
+  // Vérifier que c'est bien une image
+  if (!file.type.startsWith('image/')) {
+    setImageError("Le fichier doit être une image");
+    return;
+  }
+  
+  // Limiter la taille de l'image (5MB par exemple)
+  if (file.size > 5 * 1024 * 1024) {
+    setImageError("L'image est trop volumineuse (max 5MB)");
+    return;
+  }
+  
+  // Utiliser FileReader pour obtenir l'URL de l'image
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    // Récupérer l'URL data de l'image
+    const imageDataUrl = e.target.result;
+    setImageUrl(imageDataUrl);
+    setImageError("");
+  };
+  
+  reader.onerror = () => {
+    setImageError("Erreur lors du chargement de l'image");
+  };
+  
+  // Lire le fichier comme une URL de données
+  reader.readAsDataURL(file);
+};
+
 type BlogPostFormValues = z.infer<typeof blogPostFormSchema>;
 
 interface BlogPostFormProps {
