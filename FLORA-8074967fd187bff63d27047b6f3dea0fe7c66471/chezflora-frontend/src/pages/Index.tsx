@@ -1,8 +1,8 @@
-
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Hero from '@/components/home/Hero';
 import FeaturedProducts from '@/components/home/FeaturedProducts';
+import Newsletter from '@/components/shared/Newsletter';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
@@ -25,10 +25,10 @@ const Index = () => {
               </span>
               <h2 className="section-title">Passion & Savoir-faire</h2>
               <p className="text-muted-foreground mb-6">
-                Fondée en 2016, ChezFlora est née d'une passion pour l'art floral et le désir de créer des compositions uniques qui racontent une histoire. Notre équipe de fleuristes talentueux combine créativité et expertise pour transformer chaque événement en une expérience mémorable.
+                Fondée en 2016 par Marie et Pierre Dupont, Floralie est née d'une passion profonde pour la beauté des fleurs et leur capacité à transmettre des émotions. Ce qui a commencé comme une petite boutique de quartier s'est transformé en une référence dans le domaine de l'art floral.
               </p>
               <p className="text-muted-foreground mb-8">
-                Nous sélectionnons avec soin des fleurs de qualité exceptionnelle, en privilégiant les producteurs locaux et les pratiques durables. Chaque création est réalisée avec amour et attention aux détails, pour vous offrir ce qu'il y a de meilleur.
+                Notre philosophie est simple : nous sélectionnons les plus belles fleurs, travaillons avec des producteurs locaux et les pratiques durables, et créons des arrangements qui racontent des histoires. Chaque bouquet est une œuvre d'art, conçue avec soin et attention aux détails.
               </p>
               <Link 
                 to="/about" 
@@ -136,6 +136,9 @@ const Index = () => {
             </div>
           </div>
         </section>
+        
+        {/* Newsletter Section */}
+        <Newsletter />
         
         {/* CTA section */}
         <section className="py-24 bg-primary text-white">

@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,22 +23,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { X, Plus } from "lucide-react";
-
-// Blog post interface
-export interface BlogPost {
-  id: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  authorId: string;
-  authorName: string;
-  publishDate: Date;
-  status: "draft" | "published";
-  imageUrl: string;
-  category: string;
-  tags: string[];
-}
+import { X, Plus, Image, Calendar } from "lucide-react";
+import { POST_STATUS } from "@/services/BlogService";
+import { BlogService } from "@/services/BlogService";
 
 // Form validation schema
 const blogPostFormSchema = z.object({
@@ -58,16 +44,17 @@ const blogPostFormSchema = z.object({
   category: z.string({
     required_error: "Veuillez sélectionner une catégorie",
   }),
-  status: z.enum(["draft", "published"], {
+  status: z.enum([POST_STATUS.DRAFT, POST_STATUS.PUBLISHED, POST_STATUS.SCHEDULED, POST_STATUS.ARCHIVED], {
     required_error: "Veuillez sélectionner un statut",
   }),
+  featured: z.boolean().default(false),
 });
 
 type BlogPostFormValues = z.infer<typeof blogPostFormSchema>;
 
 interface BlogPostFormProps {
-  post: BlogPost | null;
-  onSubmit: (post: BlogPost) => void;
+  post: any | null;
+  onSubmit: (post: any) => void;
   onCancel: () => void;
 }
 
@@ -75,6 +62,13 @@ export function BlogPostForm({ post, onSubmit, onCancel }: BlogPostFormProps) {
   const [imageUrl, setImageUrl] = useState(post?.imageUrl || "");
   const [tags, setTags] = useState<string[]>(post?.tags || []);
   const [newTag, setNewTag] = useState("");
+  const [availableCategories, setAvailableCategories] = useState<string[]>([]);
+  
+  // Charger les catégories existantes
+  useEffect(() => {
+    const categories = BlogService.getAllCategories();
+    setAvailableCategories(categories);
+  }, []);
 
   // Setup form with default values
   const form = useForm<BlogPostFormValues>({
@@ -83,27 +77,20 @@ export function BlogPostForm({ post, onSubmit, onCancel }: BlogPostFormProps) {
       title: post?.title || "",
       excerpt: post?.excerpt || "",
       content: post?.content || "",
-      authorName: post?.authorName || "",
+      authorName: post?.authorName || post?.author || "",
       category: post?.category || "",
-      status: post?.status || "draft",
+      status: post?.status || POST_STATUS.DRAFT,
+      featured: post?.featured || false,
     },
   });
 
   // Form submission handler
   const handleFormSubmit = (values: BlogPostFormValues) => {
-    // Create new post object
-    const updatedPost: BlogPost = {
-      id: post?.id || `post-${Date.now()}`,
-      title: values.title,
-      excerpt: values.excerpt,
-      content: values.content,
-      authorId: post?.authorId || `auth-${Date.now()}`,
-      authorName: values.authorName,
-      publishDate: post?.publishDate || new Date(),
-      status: values.status,
-      imageUrl: imageUrl,
-      category: values.category,
-      tags: tags,
+    // Create post object for submission
+    const updatedPost = {
+      ...values,
+      imageUrl,
+      tags,
     };
 
     onSubmit(updatedPost);
@@ -121,17 +108,14 @@ export function BlogPostForm({ post, onSubmit, onCancel }: BlogPostFormProps) {
   const handleRemoveTag = (tag: string) => {
     setTags(tags.filter((t) => t !== tag));
   };
-
-  // Categories
-  const blogCategories = [
-    "Conseils d'entretien",
-    "Mariages",
-    "Saisons",
-    "Art floral",
-    "Nouveautés",
-    "Événements",
-    "Plantes d'intérieur",
-  ];
+  
+  // Handle key press in tag input
+  const handleTagKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && newTag) {
+      e.preventDefault();
+      handleAddTag();
+    }
+  };
 
   return (
     <Form {...form}>
@@ -168,14 +152,26 @@ export function BlogPostForm({ post, onSubmit, onCancel }: BlogPostFormProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {blogCategories.map((category) => (
+                      {availableCategories.map((category) => (
                         <SelectItem key={category} value={category}>
                           {category}
                         </SelectItem>
                       ))}
+                      <SelectItem value="autre">Autre</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
+                  {field.value === "autre" && (
+                    <Input
+                      placeholder="Nouvelle catégorie"
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          field.onChange(e.target.value);
+                        }
+                      }}
+                      className="mt-2"
+                    />
+                  )}
                 </FormItem>
               )}
             />
@@ -196,11 +192,23 @@ export function BlogPostForm({ post, onSubmit, onCancel }: BlogPostFormProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="draft">Brouillon</SelectItem>
-                      <SelectItem value="published">Publié</SelectItem>
+                      <SelectItem value={POST_STATUS.DRAFT}>Brouillon</SelectItem>
+                      <SelectItem value={POST_STATUS.PUBLISHED}>Publié</SelectItem>
+                      {post && (
+                        <>
+                          <SelectItem value={POST_STATUS.SCHEDULED}>Programmé</SelectItem>
+                          <SelectItem value={POST_STATUS.ARCHIVED}>Archivé</SelectItem>
+                        </>
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
+                  {field.value === POST_STATUS.SCHEDULED && (
+                    <FormDescription className="flex items-center text-sm mt-1 text-yellow-500">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      Vous pourrez configurer la date de publication après l'enregistrement
+                    </FormDescription>
+                  )}
                 </FormItem>
               )}
             />
@@ -238,6 +246,14 @@ export function BlogPostForm({ post, onSubmit, onCancel }: BlogPostFormProps) {
                       (e.target as HTMLImageElement).src = '/placeholder.svg';
                     }}
                   />
+                </div>
+              )}
+              {!imageUrl && (
+                <div className="flex items-center justify-center h-32 bg-muted rounded-md border border-dashed">
+                  <div className="text-muted-foreground text-center">
+                    <Image className="h-8 w-8 mx-auto mb-2" />
+                    <span>Ajoutez une URL d'image</span>
+                  </div>
                 </div>
               )}
             </div>
@@ -288,18 +304,14 @@ export function BlogPostForm({ post, onSubmit, onCancel }: BlogPostFormProps) {
                   placeholder="Ajouter un tag"
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      handleAddTag();
-                    }
-                  }}
+                  onKeyDown={handleTagKeyPress}
                 />
                 <Button
                   type="button"
                   variant="outline"
                   size="icon"
                   onClick={handleAddTag}
+                  disabled={!newTag}
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
@@ -320,8 +332,34 @@ export function BlogPostForm({ post, onSubmit, onCancel }: BlogPostFormProps) {
                     </Button>
                   </div>
                 ))}
+                {tags.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Aucun tag ajouté. Les tags aident à la recherche et au référencement.
+                  </p>
+                )}
               </div>
             </div>
+            
+            <FormField
+              control={form.control}
+              name="featured"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm mt-4">
+                  <div className="space-y-0.5">
+                    <FormLabel>Mettre en avant</FormLabel>
+                    <FormDescription>
+                      Cet article sera mis en avant sur la page d'accueil
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </div>
         </div>
 

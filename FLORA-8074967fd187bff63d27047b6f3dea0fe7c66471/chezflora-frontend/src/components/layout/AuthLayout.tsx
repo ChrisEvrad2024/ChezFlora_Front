@@ -20,7 +20,7 @@ const AuthLayout = ({ children, title, description, backLink }: AuthLayoutProps)
         <div 
           className="absolute inset-0 bg-cover bg-center" 
           style={{ 
-            backgroundImage: "url('https://images.unsplash.com/photo-1613539246066-78db6f03a16f?q=80&w=1974')",
+            backgroundImage: "url('https://images.unsplash.com/photo-1613539246066-78<db6f03a16f?q=80&w=1974')",
             backgroundPosition: "center 30%"
           }}
         >

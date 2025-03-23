@@ -10,6 +10,8 @@ const GUEST_CART_KEY = "guest_cart";
  * Service de gestion du panier
  */
 export class CartService {
+
+  
   /**
    * Récupère le panier actuel
    * @returns {Array} Contenu du panier
@@ -25,6 +27,23 @@ export class CartService {
       // Utilisateur non connecté - récupérer depuis le sessionStorage
       return StorageService.getSessionItem(GUEST_CART_KEY) || [];
     }
+  }
+
+  static getCartTotal() {
+    const cart = this.getCart();
+    return cart.reduce((total, item) => {
+      // Gérer différents formats
+      if (item.product && typeof item.product.price === 'number') {
+        return total + (item.product.price * (item.quantity || 1));
+      } else if (item.product && typeof item.product.price === 'string') {
+        return total + (parseFloat(item.product.price) * (item.quantity || 1));
+      } else if (typeof item.price === 'number') {
+        return total + (item.price * (item.quantity || 1));
+      } else if (typeof item.price === 'string') {
+        return total + (parseFloat(item.price) * (item.quantity || 1));
+      }
+      return total;
+    }, 0);
   }
 
   /**
@@ -55,39 +74,46 @@ export class CartService {
    */
   static addToCart(product, quantity = 1) {
     const cart = this.getCart();
-    const existingItem = cart.find(item => item.product.id === product.id);
+    
+    // Vérifier si le produit existe déjà dans le panier
+    const existingItem = cart.find(item => item.productId === product.id);
     
     if (existingItem) {
-      // Vérifier le stock
-      const updatedQuantity = existingItem.quantity + quantity;
-      const stock = ProductService.getProductById(product.id)?.stock;
-      
-      if (stock !== undefined && updatedQuantity > stock) {
-        // La quantité dépasserait le stock disponible
-        throw new Error(`La quantité demandée dépasse le stock disponible (${stock})`);
-      }
-      
-      // Mettre à jour la quantité
-      existingItem.quantity = updatedQuantity;
+        // Vérifier le stock
+        const updatedQuantity = existingItem.quantity + quantity;
+        const stock = ProductService.getProductById(product.id)?.stock;
+        
+        if (stock !== undefined && updatedQuantity > stock) {
+            throw new Error(`La quantité demandée dépasse le stock disponible (${stock})`);
+        }
+        
+        // Mettre à jour la quantité
+        existingItem.quantity = updatedQuantity;
     } else {
-      // Vérifier le stock
-      const stock = ProductService.getProductById(product.id)?.stock;
-      
-      if (stock !== undefined && quantity > stock) {
-        // La quantité dépasserait le stock disponible
-        throw new Error(`La quantité demandée dépasse le stock disponible (${stock})`);
-      }
-      
-      // Ajouter le produit
-      cart.push({
-        product,
-        quantity
-      });
+        // Vérifier le stock
+        const stock = ProductService.getProductById(product.id)?.stock;
+        
+        if (stock !== undefined && quantity > stock) {
+            throw new Error(`La quantité demandée dépasse le stock disponible (${stock})`);
+        }
+        
+        // Ajouter le produit avec une structure simplifiée
+        cart.push({
+            productId: product.id,
+            productName: product.name,
+            productPrice: product.price,
+            productImage: product.images && product.images.length > 0 ? product.images[0] : null,
+            quantity
+        });
     }
     
     this.saveCart(cart);
+    
+    // S'assurer que l'événement est déclenché
+    window.dispatchEvent(new Event('cartUpdated'));
+    
     return true;
-  }
+}
 
   /**
    * Supprime un produit du panier
@@ -143,10 +169,24 @@ export class CartService {
    * Calcule le total du panier
    * @returns {number} Total du panier
    */
-  static getCartTotal() {
-    const cart = this.getCart();
-    return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+  // Ajouter cette méthode à CartService.js
+static cleanCart() {
+  const cart = this.getCart();
+  const cleanedCart = cart.filter(item => 
+    item && 
+    item.product && 
+    typeof item.product.price === 'number' &&
+    item.quantity > 0
+  );
+  
+  // Si des éléments ont été supprimés, sauvegarder le panier nettoyé
+  if (cleanedCart.length !== cart.length) {
+    console.warn(`${cart.length - cleanedCart.length} articles invalides supprimés du panier`);
+    this.saveCart(cleanedCart);
   }
+  
+  return cleanedCart;
+}
 
   /**
    * Compte le nombre d'articles dans le panier

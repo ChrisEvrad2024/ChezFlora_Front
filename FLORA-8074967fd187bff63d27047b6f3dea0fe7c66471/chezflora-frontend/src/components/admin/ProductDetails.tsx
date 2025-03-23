@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -102,7 +102,7 @@ const ProductDetails = ({ product, isOpen, onClose, onEdit }: ProductDetailsProp
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h3 className="text-sm font-medium text-muted-foreground">Prix</h3>
-                    <p className="mt-1 text-lg font-semibold">{product.price.toFixed(2)} €</p>
+                    <p className="mt-1 text-lg font-semibold">{product.price.toFixed(2)} XAF</p>
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-muted-foreground">Stock</h3>
@@ -224,7 +224,6 @@ const ProductDetails = ({ product, isOpen, onClose, onEdit }: ProductDetailsProp
           <TabsContent value="images">
             <div className="space-y-4">
               <h3 className="text-sm font-medium text-muted-foreground">Galerie d'images ({product.images.length})</h3>
-              
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {product.images.map((image, index) => (
                   <div key={index} className="relative group rounded-md overflow-hidden border aspect-square">

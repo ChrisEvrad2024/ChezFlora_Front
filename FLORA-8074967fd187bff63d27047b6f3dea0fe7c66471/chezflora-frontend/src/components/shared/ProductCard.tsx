@@ -6,6 +6,8 @@ import { ShoppingBag, Heart, CheckCircle, XCircle } from 'lucide-react';
 import { addToCart } from '@/lib/cart';
 import { addToWishlist, removeFromWishlist, isInWishlist } from '@/lib/wishlist';
 import { toast } from 'sonner';
+import { CartService } from '@/services/CartService';
+import { addToCart as libAddToCart } from '@/lib/cart'; 
 
 interface ProductCardProps {
   product: Product;
@@ -19,9 +21,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
     e.preventDefault();
     e.stopPropagation();
     
-    addToCart(product, 1);
+    try {
+      // Essayer d'utiliser le service
+      CartService.addToCart(product, 1);
+    } catch (error) {
+      // Fallback à la méthode de lib/cart
+      libAddToCart(product, 1);
+    }
     
-    // Dispatch custom event to update cart icon
+    // S'assurer que l'événement est correctement déclenché
     window.dispatchEvent(new Event('cartUpdated'));
     
     toast.success("Ajouté au panier", {
@@ -29,6 +37,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       duration: 3000,
     });
   };
+  
   
   const toggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -116,7 +125,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         
         <div className="mt-4 text-center">
           <h3 className="font-serif text-lg font-medium">{product.name}</h3>
-          <p className="mt-1 text-primary font-medium">{product.price.toFixed(2)} €</p>
+          <p className="mt-1 text-primary font-medium">{product.price.toFixed(2)} XAF</p>
           {!isInStock && (
             <p className="text-xs text-red-500 mt-1">Rupture de stock</p>
           )}

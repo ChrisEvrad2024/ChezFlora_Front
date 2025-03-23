@@ -12,7 +12,8 @@ import {
   Menu,
   AlertCircle,
   FolderTree,
-  Home
+  Home,
+  UserCog  // Add this import
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -77,6 +78,14 @@ const AdminLayout = () => {
       label: "Clients", 
       href: "/admin/customers", 
       icon: <Users size={18} /> 
+    },
+    // Nouvel élément pour la gestion des utilisateurs
+    { 
+      label: "Utilisateurs", 
+      href: "/admin/users", 
+      icon: <UserCog size={18} />,
+      // Visible uniquement pour les Super Admin
+      adminOnly: true
     },
     { 
       label: "Blog", 

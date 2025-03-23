@@ -1,6 +1,6 @@
-
 import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Twitter } from 'lucide-react';
+import Newsletter from '@/components/shared/Newsletter';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -8,9 +8,9 @@ const Footer = () => {
   return (
     <footer className="bg-muted py-16">
       <div className="container max-w-7xl mx-auto px-4 md:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo and About */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:col-span-2">
             <Link to="/" className="font-serif text-2xl font-medium">ChezFlora</Link>
             <p className="text-muted-foreground text-sm">
               Depuis 2016, ChezFlora vous propose des créations florales uniques et des services de décoration pour tous vos événements.
@@ -97,28 +97,33 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact */}
-          <div>
-            <h3 className="font-serif text-lg font-medium mb-4">Contact</h3>
-            <address className="not-italic space-y-2 text-muted-foreground text-sm">
-              <p>123 Rue des Fleurs</p>
-              <p>75001 Paris, France</p>
-              <p className="pt-2">
-                <a href="tel:+33123456789" className="hover:text-primary transition-colors">
-                  +33 1 23 45 67 89
-                </a>
-              </p>
-              <p>
-                <a href="mailto:contact@chezflora.fr" className="hover:text-primary transition-colors">
-                  contact@chezflora.fr
-                </a>
-              </p>
-            </address>
+          {/* Newsletter */}
+          <div className="lg:col-span-1">
+            <Newsletter variant="footer" />
           </div>
         </div>
 
-        <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground text-sm">
-          <p>&copy; {currentYear} ChezFlora. Tous droits réservés.</p>
+        {/* Contact Info */}
+        <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            <div className="flex items-center">
+              <span className="text-sm text-muted-foreground mr-2">Adresse:</span>
+              <span className="text-sm">123 Rue des Fleurs, 75001 Paris</span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-sm text-muted-foreground mr-2">Téléphone:</span>
+              <a href="tel:+33123456789" className="text-sm hover:text-primary transition-colors">
+                +33 1 23 45 67 89
+              </a>
+            </div>
+            <div className="flex items-center">
+              <span className="text-sm text-muted-foreground mr-2">Email:</span>
+              <a href="mailto:contact@chezflora.fr" className="text-sm hover:text-primary transition-colors">
+                contact@chezflora.fr
+              </a>
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground">&copy; {currentYear} ChezFlora. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

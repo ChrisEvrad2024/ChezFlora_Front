@@ -32,6 +32,8 @@ import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import CategoriesManagement from "./pages/admin/CategoriesManagement";
+import NewsletterManagement from "./pages/admin/NewsletterManagement";
+import UserManagement from "./pages/admin/UserManagement";
 
 // Composants pour la protection des routes
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -91,6 +93,8 @@ const App = () => {
                 <Route path="categories" element={<CategoriesManagement />} />
                 <Route path="blog" element={<BlogManagement />} />
                 <Route path="customers" element={<CustomersManagement />} />
+                <Route path="newsletter" element={<NewsletterManagement />} />
+                <Route path="users" element={<UserManagement />} />
                 {/* These routes will be implemented later */}
                 <Route path="orders" element={<div className="p-4">Gestion des commandes (à implémenter)</div>} />
                 <Route path="analytics" element={<div className="p-4">Statistiques (à implémenter)</div>} />

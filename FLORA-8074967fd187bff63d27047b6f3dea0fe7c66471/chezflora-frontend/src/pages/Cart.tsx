@@ -66,21 +66,38 @@ const checkoutSchema = z.object({
 });
 
 // Fonction utilitaire pour normaliser les données du produit
-const normalizeProductData = (item: any) => {
-  // Si item.product existe, on l'utilise, sinon on considère que item est le produit
-  const product = item.product || item;
-  
-  return {
-    id: product.id,
-    name: product.name || "Produit sans nom",
-    price: parseFloat(product.price) || 0,
-    images: Array.isArray(product.images) ? product.images : (product.image ? [product.image] : []),
-    image: product.image || (product.images && product.images.length > 0 ? product.images[0] : null),
-    description: product.description || "Description non disponible",
-    category: product.category || "Non catégorisé",
-    quantity: item.quantity || 1,
-    popular: product.popular !== undefined ? product.popular : false,
-  };
+const normalizeProductData = (item) => {
+  if (item.productId) {
+    // Nouveau format (structure simplifiée)
+    return {
+      id: item.productId,
+      name: item.productName || "Produit sans nom",
+      price: parseFloat(item.productPrice) || 0,
+      images: item.productImage ? [item.productImage] : [],
+      quantity: item.quantity || 1
+    };
+  } else if (item.product) {
+    // Ancien format (avec objet product complet)
+    const product = item.product;
+    return {
+      id: product.id,
+      name: product.name || "Produit sans nom",
+      price: parseFloat(product.price) || 0,
+      images: Array.isArray(product.images) ? product.images : 
+             (product.image ? [product.image] : []),
+      quantity: item.quantity || 1
+    };
+  } else {
+    // Format direct (l'item est le produit)
+    return {
+      id: item.id,
+      name: item.name || "Produit sans nom",
+      price: parseFloat(item.price) || 0,
+      images: Array.isArray(item.images) ? item.images : 
+             (item.image ? [item.image] : []),
+      quantity: 1
+    };
+  }
 };
 
 const Cart = () => {

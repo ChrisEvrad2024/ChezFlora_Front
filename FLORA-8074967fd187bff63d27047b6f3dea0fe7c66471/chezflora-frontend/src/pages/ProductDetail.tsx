@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ProductService } from '@/services/ProductService';
 import { addToRecentlyViewed } from '@/lib/recentlyViewed';
@@ -18,7 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 
 const ProductDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [categoryPath, setCategoryPath] = useState([]);
@@ -42,7 +42,7 @@ const ProductDetail = () => {
     setIsLoading(true);
     try {
       // Charger le produit
-      const productData = ProductService.getProductById(id);
+      const productData = await ProductService.getProductById(id);
       
       if (!productData) {
         navigate('/catalog');
@@ -57,12 +57,12 @@ const ProductDetail = () => {
       
       // Charger le chemin de catégorie
       if (productData.category) {
-        const path = ProductService.getCategoryPath(productData.category);
+        const path = await ProductService.getCategoryPath(productData.category);
         setCategoryPath(path);
       }
       
       // Charger les produits associés
-      const related = ProductService.getProductsByCategory(productData.category)
+      const related = await ProductService.getProductsByCategory(productData.category)
         .filter(p => p.id !== productData.id)
         .slice(0, 4);
       setRelatedProducts(related);
@@ -230,21 +230,24 @@ const ProductDetail = () => {
               Boutique
             </Link>
             
-            {categoryPath.map((category, index) => (
-              <React.Fragment key={category.id}>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                <Link 
-                  to={`/catalog?category=${category.id}`}
-                  className={`text-sm ${
-                    index === categoryPath.length - 1 
-                      ? 'font-medium' 
-                      : 'text-muted-foreground hover:text-foreground transition-colors'
-                  }`}
-                >
-                  {category.name}
-                </Link>
-              </React.Fragment>
-            ))}
+            {categoryPath.map((category, index) => {
+              // Using a key directly on the fragment without any other props
+              return (
+                <React.Fragment key={category.id}>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  <Link 
+                    to={`/catalog?category=${category.id}`}
+                    className={`text-sm ${
+                      index === categoryPath.length - 1 
+                        ? 'font-medium' 
+                        : 'text-muted-foreground hover:text-foreground transition-colors'
+                    }`}
+                  >
+                    {category.name}
+                  </Link>
+                </React.Fragment>
+              );
+            })}
             
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium truncate">{product.name}</span>
@@ -345,7 +348,7 @@ const ProductDetail = () => {
                 {/* Prix et référence */}
                 <div className="flex justify-between items-center mt-4">
                   <div>
-                    <p className="text-3xl text-primary font-medium">{product.price.toFixed(2)} €</p>
+                    <p className="text-3xl text-primary font-medium">{product.price.toFixed(2)} XAF</p>
                     {product.sku && (
                       <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
                         <Tag size={14} />
