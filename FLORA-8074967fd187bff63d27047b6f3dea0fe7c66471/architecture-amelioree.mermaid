@@ -1,0 +1,84 @@
+graph TB
+    %% Clients
+    Client[Client Web / Mobile]
+    
+    %% Frontend
+    subgraph "Frontend (Next.js/React)"
+        ClientApp["Application Client<br>(Next.js)"]
+        MobileApp["Application Mobile<br>(React Native)"]
+        AdminApp["Dashboard Admin<br>(React)"]
+    end
+    
+    %% API Gateway
+    API_Gateway["API Gateway"]
+    
+    %% Microservices
+    subgraph "Microservices (Node.js/NestJS/TypeScript)"
+        AuthService["Service<br>Authentification"]
+        ProductService["Service<br>Catalogue Produits"]
+        OrderService["Service<br>Commandes"]
+        QuoteService["Service<br>Devis"]
+        CmsService["Service<br>CMS"]
+        BlogService["Service<br>Blog"]
+        NotificationService["Service<br>Notifications"]
+        AnalyticsService["Service<br>Analytique"]
+        PaymentService["Service<br>Paiement"]
+    end
+    
+    %% Services Partagés
+    subgraph "Services Partagés"
+        Cache["Redis<br>Cache"]
+        MessageBroker["RabbitMQ/Kafka<br>Message Broker"]
+        Upload["Service<br>Stockage"]
+        CDN["CDN"]
+    end
+    
+    %% Bases de données
+    subgraph "Bases de données (MySQL)"
+        DB_Auth["DB<br>Utilisateurs"]
+        DB_Products["DB<br>Produits"]
+        DB_Orders["DB<br>Commandes"]
+        DB_Quotes["DB<br>Devis"]
+        DB_CMS["DB<br>CMS"]
+        DB_Blog["DB<br>Blog"]
+    end
+    
+    %% Systèmes externes
+    subgraph "Systèmes externes"
+        EmailService["Service<br>Email"]
+        SMSService["Service<br>SMS"]
+        MoMo["Mobile Money<br>API"]
+        Analytics["Google<br>Analytics"]
+    end
+    
+    %% DevOps
+    subgraph "DevOps & Infrastructure"
+        CI_CD["CI/CD<br>Pipeline"]
+        Docker["Docker<br>Containers"]
+        K8s["Kubernetes"]
+        Monitoring["Monitoring<br>ELK/Grafana"]
+    end
+    
+    %% Connexions
+    Client --> ClientApp & MobileApp
+    Client --> CDN
+    
+    ClientApp & MobileApp & AdminApp --> API_Gateway
+    API_Gateway --> AuthService & ProductService & OrderService & QuoteService & CmsService & BlogService & NotificationService & AnalyticsService & PaymentService
+    
+    AuthService & ProductService & OrderService & QuoteService & CmsService & BlogService & PaymentService <--> MessageBroker
+    AuthService & ProductService & OrderService & QuoteService & CmsService & BlogService & PaymentService <--> Cache
+    
+    AuthService --> DB_Auth
+    ProductService --> DB_Products
+    OrderService --> DB_Orders
+    QuoteService --> DB_Quotes
+    CmsService --> DB_CMS
+    BlogService --> DB_Blog
+    
+    NotificationService --> EmailService & SMSService
+    PaymentService --> MoMo
+    AnalyticsService --> Analytics
+    
+    ProductService & CmsService & BlogService --> Upload
+    Upload --> CDN

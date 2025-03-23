@@ -1,0 +1,124 @@
+# User Stories par Rôle pour ChezFlora
+
+## Rôle: Client
+
+### Gestion du Compte
+1. En tant que client, je dois pouvoir créer un compte en fournissant mes informations personnelles afin d'accéder aux fonctionnalités réservées aux utilisateurs enregistrés.
+2. En tant que client, je dois pouvoir me connecter à mon compte avec mon email et mot de passe afin d'accéder à mon espace personnel.
+3. En tant que client, je dois pouvoir réinitialiser mon mot de passe en cas d'oubli afin de récupérer l'accès à mon compte.
+4. En tant que client, je dois pouvoir modifier mes informations personnelles afin de les maintenir à jour.
+5. En tant que client, je dois pouvoir consulter l'historique de mes commandes afin de suivre mes achats précédents.
+
+### Gestion des Adresses
+6. En tant que client, je dois pouvoir ajouter une ou plusieurs adresses de livraison à mon profil afin de faciliter mes futures commandes.
+7. En tant que client, je dois pouvoir définir une adresse par défaut afin de l'utiliser automatiquement lors de mes commandes.
+8. En tant que client, je dois pouvoir modifier ou supprimer mes adresses existantes afin de maintenir mes informations à jour.
+
+### Navigation et Produits
+9. En tant que client, je dois pouvoir consulter les différentes catégories de produits afin de trouver facilement ce que je cherche.
+10. En tant que client, je dois pouvoir effectuer une recherche de produits par mots-clés afin de trouver rapidement des articles spécifiques.
+11. En tant que client, je dois pouvoir filtrer les produits selon différents critères (prix, catégorie, etc.) afin d'affiner mes résultats.
+12. En tant que client, je dois pouvoir consulter les détails d'un produit (images, description, prix) afin de prendre une décision d'achat informée.
+
+### Panier et Commandes
+13. En tant que client, je dois pouvoir ajouter des produits à mon panier afin de les regrouper avant l'achat.
+14. En tant que client, je dois pouvoir modifier les quantités ou supprimer des articles de mon panier afin d'ajuster ma commande.
+15. En tant que client, je dois pouvoir passer une commande en sélectionnant une adresse de livraison et un mode de paiement afin de finaliser mon achat.
+16. En tant que client, je dois pouvoir suivre l'état de ma commande (en préparation, expédiée, livrée) afin de connaître son avancement.
+17. En tant que client, je dois pouvoir consulter les détails d'une commande passée afin de vérifier les informations.
+18. En tant que client, je dois pouvoir annuler une commande non expédiée afin de me rétracter si nécessaire.
+
+### Devis Personnalisés
+19. En tant que client, je dois pouvoir demander un devis personnalisé en spécifiant mes besoins afin d'obtenir une offre adaptée.
+20. En tant que client, je dois pouvoir consulter mes devis en cours et passés afin de suivre mes demandes.
+21. En tant que client, je dois pouvoir accepter ou refuser un devis proposé afin de finaliser ou non la prestation.
+
+### Blog et Interaction
+22. En tant que client, je dois pouvoir consulter les articles du blog afin de m'informer sur les sujets liés aux produits.
+23. En tant que client, je dois pouvoir commenter les articles du blog afin de partager mon opinion.
+24. En tant que client, je dois pouvoir noter et évaluer les produits achetés afin de partager mon expérience avec d'autres clients.
+
+### Favoris et Préférences
+25. En tant que client, je dois pouvoir ajouter des produits à ma liste de favoris afin de les retrouver facilement lors de futures visites.
+26. En tant que client, je dois pouvoir m'abonner à la newsletter afin de recevoir des informations sur les nouveautés et promotions.
+
+## Rôle: Admin
+
+### Gestion des Produits
+27. En tant qu'admin, je dois pouvoir ajouter de nouveaux produits avec tous leurs détails afin d'enrichir le catalogue.
+28. En tant qu'admin, je dois pouvoir modifier les informations des produits existants afin de les maintenir à jour.
+29. En tant qu'admin, je dois pouvoir supprimer des produits du catalogue afin de retirer les articles obsolètes.
+30. En tant qu'admin, je dois pouvoir gérer le stock des produits afin d'assurer la disponibilité des articles.
+31. En tant qu'admin, je dois pouvoir télécharger des images pour les produits afin d'illustrer le catalogue.
+
+### Gestion des Commandes
+32. En tant qu'admin, je dois pouvoir consulter toutes les commandes afin de suivre les ventes.
+33. En tant qu'admin, je dois pouvoir filtrer et rechercher des commandes selon différents critères afin de trouver rapidement une commande spécifique.
+34. En tant qu'admin, je dois pouvoir mettre à jour le statut des commandes afin d'informer les clients de l'évolution de leur achat.
+35. En tant qu'admin, je dois pouvoir annuler une commande si nécessaire afin de gérer les situations exceptionnelles.
+36. En tant qu'admin, je dois pouvoir générer des factures pour les commandes afin de respecter les obligations légales.
+
+### Gestion des Catégories
+37. En tant qu'admin, je dois pouvoir créer et organiser des catégories de produits afin de structurer le catalogue.
+38. En tant qu'admin, je dois pouvoir modifier ou supprimer des catégories afin d'adapter la structure du catalogue.
+39. En tant qu'admin, je dois pouvoir définir des relations entre catégories (parent/enfant) afin d'organiser hiérarchiquement les produits.
+
+### Gestion des Devis
+40. En tant qu'admin, je dois pouvoir consulter les demandes de devis afin de répondre aux besoins spécifiques des clients.
+41. En tant qu'admin, je dois pouvoir élaborer et envoyer des propositions de devis afin de répondre aux demandes des clients.
+42. En tant qu'admin, je dois pouvoir suivre l'état des devis (en attente, accepté, refusé) afin de gérer les prestations personnalisées.
+
+### Gestion du Blog
+43. En tant qu'admin, je dois pouvoir créer et publier des articles de blog afin d'enrichir le contenu du site.
+44. En tant qu'admin, je dois pouvoir modifier ou supprimer des articles existants afin de maintenir le contenu à jour.
+45. En tant qu'admin, je dois pouvoir modérer les commentaires afin d'assurer la qualité des discussions.
+46. En tant qu'admin, je dois pouvoir planifier la publication d'articles afin d'organiser le calendrier éditorial.
+
+### Gestion du CMS
+47. En tant qu'admin, je dois pouvoir modifier le contenu des pages principales afin de mettre à jour les informations du site.
+48. En tant qu'admin, je dois pouvoir gérer les composants du site (bannières, blocs de texte, etc.) afin de personnaliser la présentation.
+49. En tant qu'admin, je dois pouvoir créer et gérer des pages spéciales temporaires (promotions, événements) afin d'animer le site.
+
+### Promotions et Marketing
+50. En tant qu'admin, je dois pouvoir créer des codes promotionnels afin d'offrir des réductions aux clients.
+51. En tant qu'admin, je dois pouvoir configurer des promotions sur certains produits afin de stimuler les ventes.
+52. En tant qu'admin, je dois pouvoir exporter la liste des abonnés à la newsletter afin de gérer les communications marketing.
+
+### Tableau de Bord et Statistiques
+53. En tant qu'admin, je dois pouvoir consulter un tableau de bord avec les informations essentielles afin d'avoir une vue d'ensemble de l'activité.
+54. En tant qu'admin, je dois pouvoir visualiser des statistiques de ventes afin d'analyser les performances commerciales.
+55. En tant qu'admin, je dois pouvoir générer des rapports sur les produits populaires afin d'orienter les décisions commerciales.
+
+## Rôle: Super Admin
+
+### Gestion des Utilisateurs
+56. En tant que super admin, je dois pouvoir créer des comptes administrateurs afin de déléguer la gestion du site.
+57. En tant que super admin, je dois pouvoir définir et modifier les rôles et permissions des utilisateurs afin de contrôler les accès.
+58. En tant que super admin, je dois pouvoir suspendre ou supprimer des comptes utilisateurs afin de gérer les accès problématiques.
+59. En tant que super admin, je dois pouvoir consulter l'historique des actions des administrateurs afin de superviser l'activité.
+
+### Configuration Système
+60. En tant que super admin, je dois pouvoir configurer les paramètres généraux du site afin d'adapter son fonctionnement.
+61. En tant que super admin, je dois pouvoir gérer les méthodes de paiement disponibles afin d'offrir différentes options aux clients.
+62. En tant que super admin, je dois pouvoir configurer les options de livraison afin de définir les services proposés.
+63. En tant que super admin, je dois pouvoir paramétrer les emails automatiques afin de personnaliser la communication.
+64. En tant que super admin, je dois pouvoir effectuer des sauvegardes de la base de données afin de sécuriser les données.
+
+### Gestion Avancée
+65. En tant que super admin, je dois pouvoir accéder et modifier manuellement les données critiques afin de résoudre des situations exceptionnelles.
+66. En tant que super admin, je dois pouvoir créer des procédures stockées et des déclencheurs en base de données afin d'optimiser certains traitements.
+67. En tant que super admin, je dois pouvoir accéder aux logs système afin de diagnostiquer des problèmes techniques.
+68. En tant que super admin, je dois pouvoir mettre à jour le système afin de maintenir la plateforme à jour.
+
+### Analyses et Statistiques Avancées
+69. En tant que super admin, je dois pouvoir consulter des statistiques détaillées sur tous les aspects du site afin d'analyser la performance globale.
+70. En tant que super admin, je dois pouvoir créer des tableaux de bord personnalisés afin de suivre des indicateurs spécifiques.
+71. En tant que super admin, je dois pouvoir exporter des rapports complets afin de partager les informations avec les parties prenantes.
+72. En tant que super admin, je dois pouvoir analyser les comportements utilisateurs afin d'optimiser l'expérience client.
+
+### Gestion de Crise
+73. En tant que super admin, je dois pouvoir activer un mode maintenance afin d'effectuer des interventions techniques sans perturber l'expérience utilisateur.
+74. En tant que super admin, je dois pouvoir envoyer des notifications d'urgence aux utilisateurs afin de communiquer sur des situations exceptionnelles.
+75. En tant que super admin, je dois pouvoir restaurer le système à partir d'une sauvegarde afin de récupérer des données en cas de problème majeur.
+
+Ces user stories couvrent l'ensemble des fonctionnalités clés de la plateforme ChezFlora et définissent clairement ce que chaque type d'utilisateur (client, admin, super admin) doit pouvoir accomplir.

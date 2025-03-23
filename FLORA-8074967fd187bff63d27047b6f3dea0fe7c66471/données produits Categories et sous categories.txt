@@ -1,0 +1,117 @@
+-- Insertion des catégories principales
+INSERT INTO categories (id, name, description, parent_id, image, created_at, updated_at)
+VALUES 
+(UUID(), 'Plantes d''intérieur', 'Plantes adaptées aux espaces intérieurs', NULL, 'https://images.pexels.com/photos/3644742/pexels-photo-3644742.jpeg', NOW(), NOW()),
+(UUID(), 'Plantes d''extérieur', 'Plantes pour jardins et terrasses', NULL, 'https://images.pexels.com/photos/1477166/pexels-photo-1477166.jpeg', NOW(), NOW()),
+(UUID(), 'Accessoires de jardinage', 'Tous les outils et accessoires pour vos plantes', NULL, 'https://images.pexels.com/photos/1301856/pexels-photo-1301856.jpeg', NOW(), NOW());
+
+-- Récupération des IDs des catégories principales
+SET @cat_interieur_id = (SELECT id FROM categories WHERE name = 'Plantes d''intérieur' LIMIT 1);
+SET @cat_exterieur_id = (SELECT id FROM categories WHERE name = 'Plantes d''extérieur' LIMIT 1);
+SET @cat_accessoires_id = (SELECT id FROM categories WHERE name = 'Accessoires de jardinage' LIMIT 1);
+
+-- Insertion des sous-catégories
+INSERT INTO categories (id, name, description, parent_id, image, created_at, updated_at)
+VALUES 
+-- Sous-catégories plantes d'intérieur
+(UUID(), 'Plantes tropicales', 'Plantes exotiques d''origine tropicale', @cat_interieur_id, 'https://images.pexels.com/photos/1084199/pexels-photo-1084199.jpeg', NOW(), NOW()),
+(UUID(), 'Plantes succulentes', 'Plantes grasses et cactus faciles d''entretien', @cat_interieur_id, 'https://images.pexels.com/photos/1470171/pexels-photo-1470171.jpeg', NOW(), NOW()),
+
+-- Sous-catégories plantes d'extérieur
+(UUID(), 'Plantes à fleurs', 'Plantes fleuries pour embellir votre jardin', @cat_exterieur_id, 'https://images.pexels.com/photos/2395249/pexels-photo-2395249.jpeg', NOW(), NOW()),
+(UUID(), 'Arbustes', 'Arbustes décoratifs pour structurer votre espace extérieur', @cat_exterieur_id, 'https://images.pexels.com/photos/4497591/pexels-photo-4497591.jpeg', NOW(), NOW()),
+
+-- Sous-catégories accessoires
+(UUID(), 'Pots et jardinières', 'Contenants pour vos plantes', @cat_accessoires_id, 'https://images.pexels.com/photos/1084540/pexels-photo-1084540.jpeg', NOW(), NOW()),
+(UUID(), 'Outils de jardinage', 'Outils pratiques pour l''entretien des plantes', @cat_accessoires_id, 'https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg', NOW(), NOW());
+
+-- Récupération des IDs des sous-catégories
+SET @subcat_tropicales_id = (SELECT id FROM categories WHERE name = 'Plantes tropicales' LIMIT 1);
+SET @subcat_succulentes_id = (SELECT id FROM categories WHERE name = 'Plantes succulentes' LIMIT 1);
+SET @subcat_fleurs_id = (SELECT id FROM categories WHERE name = 'Plantes à fleurs' LIMIT 1);
+SET @subcat_arbustes_id = (SELECT id FROM categories WHERE name = 'Arbustes' LIMIT 1);
+SET @subcat_pots_id = (SELECT id FROM categories WHERE name = 'Pots et jardinières' LIMIT 1);
+SET @subcat_outils_id = (SELECT id FROM categories WHERE name = 'Outils de jardinage' LIMIT 1);
+
+-- Insertion des produits
+INSERT INTO products (id, category_id, name, description, price, stock, is_active, created_at, updated_at)
+VALUES
+-- Produits plantes tropicales
+(UUID(), @subcat_tropicales_id, 'Monstera Deliciosa', 'Plante tropicale aux grandes feuilles percées, facile d''entretien', 39.99, 15, 1, NOW(), NOW()),
+(UUID(), @subcat_tropicales_id, 'Ficus Lyrata', 'Aussi appelé "Figuier lyre", cette plante apporte une touche de verdure exotique', 45.99, 8, 1, NOW(), NOW()),
+
+-- Produits plantes succulentes
+(UUID(), @subcat_succulentes_id, 'Trio de cactus', 'Ensemble de 3 mini cactus dans leurs pots en terre cuite', 19.99, 25, 1, NOW(), NOW()),
+(UUID(), @subcat_succulentes_id, 'Echeveria', 'Succulente en rosette aux couleurs bleutées', 12.99, 30, 1, NOW(), NOW()),
+
+-- Produits plantes à fleurs
+(UUID(), @subcat_fleurs_id, 'Rosier grimpant', 'Rosier aux fleurs parfumées, idéal pour habiller un mur ou une pergola', 24.99, 12, 1, NOW(), NOW()),
+(UUID(), @subcat_fleurs_id, 'Lavande', 'Plante méditerranéenne aux fleurs violettes et au parfum relaxant', 9.99, 40, 1, NOW(), NOW()),
+
+-- Produits arbustes
+(UUID(), @subcat_arbustes_id, 'Buis', 'Arbuste à feuillage persistant, parfait pour les haies et les topiaires', 29.99, 18, 1, NOW(), NOW()),
+(UUID(), @subcat_arbustes_id, 'Hortensia', 'Arbuste aux grandes fleurs colorées, parfait pour les zones ombragées', 22.99, 15, 1, NOW(), NOW()),
+
+-- Produits pots et jardinières
+(UUID(), @subcat_pots_id, 'Pot en terre cuite artisanal', 'Pot en terre cuite réalisé par des artisans locaux, diamètre 20cm', 24.99, 15, 1, NOW(), NOW()),
+(UUID(), @subcat_pots_id, 'Jardinière suspendue en macramé', 'Élégante jardinière suspendue en corde macramé avec pot en céramique blanche', 34.99, 10, 1, NOW(), NOW()),
+
+-- Produits outils de jardinage
+(UUID(), @subcat_outils_id, 'Kit jardinage 3 pièces', 'Ensemble comprenant une pelle, une fourche à main et un transplantoir', 19.99, 20, 1, NOW(), NOW()),
+(UUID(), @subcat_outils_id, 'Sécateur professionnel', 'Sécateur en acier inoxydable avec poignées ergonomiques', 29.99, 15, 1, NOW(), NOW());
+
+-- Récupération des IDs des produits pour ajouter les images
+SET @monstera_id = (SELECT id FROM products WHERE name = 'Monstera Deliciosa' LIMIT 1);
+SET @ficus_id = (SELECT id FROM products WHERE name = 'Ficus Lyrata' LIMIT 1);
+SET @cactus_id = (SELECT id FROM products WHERE name = 'Trio de cactus' LIMIT 1);
+SET @echeveria_id = (SELECT id FROM products WHERE name = 'Echeveria' LIMIT 1);
+SET @rosier_id = (SELECT id FROM products WHERE name = 'Rosier grimpant' LIMIT 1);
+SET @lavande_id = (SELECT id FROM products WHERE name = 'Lavande' LIMIT 1);
+SET @buis_id = (SELECT id FROM products WHERE name = 'Buis' LIMIT 1);
+SET @hortensia_id = (SELECT id FROM products WHERE name = 'Hortensia' LIMIT 1);
+SET @pot_terre_id = (SELECT id FROM products WHERE name = 'Pot en terre cuite artisanal' LIMIT 1);
+SET @jardiniere_id = (SELECT id FROM products WHERE name = 'Jardinière suspendue en macramé' LIMIT 1);
+SET @kit_jardinage_id = (SELECT id FROM products WHERE name = 'Kit jardinage 3 pièces' LIMIT 1);
+SET @secateur_id = (SELECT id FROM products WHERE name = 'Sécateur professionnel' LIMIT 1);
+
+-- Insertion des images produits
+INSERT INTO product_images (id, product_id, url, `order`, created_at, updated_at)
+VALUES
+-- Images Monstera
+(UUID(), @monstera_id, 'https://images.pexels.com/photos/3125195/pexels-photo-3125195.jpeg', 0, NOW(), NOW()),
+(UUID(), @monstera_id, 'https://images.pexels.com/photos/6208087/pexels-photo-6208087.jpeg', 1, NOW(), NOW()),
+
+-- Images Ficus
+(UUID(), @ficus_id, 'https://images.pexels.com/photos/1084199/pexels-photo-1084199.jpeg', 0, NOW(), NOW()),
+(UUID(), @ficus_id, 'https://images.pexels.com/photos/6208086/pexels-photo-6208086.jpeg', 1, NOW(), NOW()),
+
+-- Images Cactus
+(UUID(), @cactus_id, 'https://images.pexels.com/photos/1903965/pexels-photo-1903965.jpeg', 0, NOW(), NOW()),
+(UUID(), @cactus_id, 'https://images.pexels.com/photos/1470171/pexels-photo-1470171.jpeg', 1, NOW(), NOW()),
+
+-- Images Echeveria
+(UUID(), @echeveria_id, 'https://images.pexels.com/photos/1906439/pexels-photo-1906439.jpeg', 0, NOW(), NOW()),
+
+-- Images Rosier
+(UUID(), @rosier_id, 'https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg', 0, NOW(), NOW()),
+
+-- Images Lavande
+(UUID(), @lavande_id, 'https://images.pexels.com/photos/158175/fresh-lavender-herbs-wild-plant-158175.jpeg', 0, NOW(), NOW()),
+
+-- Images Buis
+(UUID(), @buis_id, 'https://images.pexels.com/photos/580900/pexels-photo-580900.jpeg', 0, NOW(), NOW()),
+
+-- Images Hortensia
+(UUID(), @hortensia_id, 'https://images.pexels.com/photos/1589937/pexels-photo-1589937.jpeg', 0, NOW(), NOW()),
+
+-- Images Pot terre cuite
+(UUID(), @pot_terre_id, 'https://images.pexels.com/photos/2146113/pexels-photo-2146113.jpeg', 0, NOW(), NOW()),
+
+-- Images Jardinière macramé
+(UUID(), @jardiniere_id, 'https://images.pexels.com/photos/1084540/pexels-photo-1084540.jpeg', 0, NOW(), NOW()),
+
+-- Images Kit jardinage
+(UUID(), @kit_jardinage_id, 'https://images.pexels.com/photos/2132171/pexels-photo-2132171.jpeg', 0, NOW(), NOW()),
+
+-- Images Sécateur
+(UUID(), @secateur_id, 'https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg', 0, NOW(), NOW());
